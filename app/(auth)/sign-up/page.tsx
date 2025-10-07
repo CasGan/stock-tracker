@@ -1,4 +1,5 @@
 'use client';
+
 import InputField from "@/components/forms/InputField";
 import { Button } from "@/components/ui/button";
 import {useForm} from "react-hook-form";
@@ -6,8 +7,13 @@ import SelectField from "@/components/forms/SelectField";
 import { INVESTMENT_GOALS, PREFERRED_INDUSTRIES, RISK_TOLERANCE_OPTIONS } from "@/lib/constants";
 import { CountrySelectField } from "@/components/forms/CountrySelectField";
 import FooterLink from "@/components/forms/FooterLink";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { signUpWithEmail } from "@/lib/actions/auth.actions";
 
 const SignUpPage = () => {
+    const router = useRouter(); 
+
     const {
         register,
         handleSubmit,
@@ -28,9 +34,15 @@ const SignUpPage = () => {
 
     const onSubmit = async (data: SignUpFormData) => {
         try {
-            console.log(data);
+            //signUpWithEmail 
+            const result = await signUpWithEmail(data);
+            if(result.success) router.push('/');
+
         } catch (error) {
-            console.error("SignUp Form Error: ",error);
+            console.error(error);
+            toast.error('Sign Up Failed'), {
+                description: error instanceof Error ? error.message : 'Account Creation Failed'
+            }
         }
     }
 
@@ -39,82 +51,78 @@ const SignUpPage = () => {
     <h1 className="form-title">Sign Up & Personalize</h1>
 
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        {/* inputs */}
-        {/* fullname input */}
-        <InputField
-            name="fullName"
-            label="Full Name"
-            placeholder = "John Doe"
-            register={register}
-            error={errors.fullName}
-            validation={{required: 'Full name is required ', minLength: 2}}
-        />
-        {/* email input */}
-        <InputField
-            name="email"
-            label="Email"
-            placeholder = "Enter Your Email"
-            register={register}
-            type="email"
-            error={errors.email}
-            validation={{ required: 'Email is required', pattern: /^\w+@\w+\.\w+$/, message: 'Email address is required' }}
-        />
-        {/* password input */}
-        <InputField
-            name="password"
-            label="Password"
-            placeholder = "Enter a strong password"
-            type="password"
-            register={register}
-            error={errors.password}
-            validation={{required: 'Full name is required. ', minLength: 2}}
-        />
-        {/* country selection */}
-        <CountrySelectField
-             name="country"
-             label="Country"
-             control={control}
-             error={errors.country}
-             required
-        /> 
+                <InputField
+                    name="fullName"
+                    label="Full Name"
+                    placeholder="John Doe"
+                    register={register}
+                    error={errors.fullName}
+                    validation={{ required: 'Full name is required', minLength: 2 }}
+                />
 
-        <SelectField
-            name="investmentGoals"
-            label="Investment Goals"
-            placeholder="Select your investment goal"
-            options={INVESTMENT_GOALS}
-            control={control}
-            error={errors.investmentGoals}
-            required
-        />
+                <InputField
+                    name="email"
+                    label="Email"
+                    placeholder="contact@jsmastery.com"
+                    register={register}
+                    error={errors.email}
+                    validation={{ required: 'Email name is required', pattern: /^\w+@\w+\.\w+$/, message: 'Email address is required' }}
+                />
 
-          <SelectField
-            name="riskTolerance"
-            label="Risk Tolerance"
-            placeholder="Select your risk level"
-            options={RISK_TOLERANCE_OPTIONS}
-            control={control}
-            error={errors.riskTolerance}
-            required
-        />
+                <InputField
+                    name="password"
+                    label="Password"
+                    placeholder="Enter a strong password"
+                    type="password"
+                    register={register}
+                    error={errors.password}
+                    validation={{ required: 'Password is required', minLength: 8 }}
+                />
 
-          <SelectField
-            name="preferredIndustry"
-            label="Preferred Industry"
-            placeholder="Select your preferred industries"
-            options={PREFERRED_INDUSTRIES}
-            control={control}
-            error={errors.preferredIndustry}
-            required
-        />
+                <CountrySelectField
+                    name="country"
+                    label="Country"
+                    control={control}
+                    error={errors.country}
+                    required
+                />
 
+                <SelectField
+                    name="investmentGoals"
+                    label="Investment Goals"
+                    placeholder="Select your investment goal"
+                    options={INVESTMENT_GOALS}
+                    control={control}
+                    error={errors.investmentGoals}
+                    required
+                />
 
-        <Button type="submit" disabled={isSubmitting} className="yellow-btn w-full mt-5">
-            {isSubmitting ? 'Creating Account' : 'Start Your Investing Journey'}
-        </Button>
+                <SelectField
+                    name="riskTolerance"
+                    label="Risk Tolerance"
+                    placeholder="Select your risk level"
+                    options={RISK_TOLERANCE_OPTIONS}
+                    control={control}
+                    error={errors.riskTolerance}
+                    required
+                />
 
-        <FooterLink text="Already have an account?" linkText="Sign in" href="/sign-in" />
-    </form>
+                <SelectField
+                    name="preferredIndustry"
+                    label="Preferred Industry"
+                    placeholder="Select your preferred industry"
+                    options={PREFERRED_INDUSTRIES}
+                    control={control}
+                    error={errors.preferredIndustry}
+                    required
+                />
+
+                <Button type="submit" disabled={isSubmitting} className="yellow-btn w-full mt-5">
+                    {isSubmitting ? 'Creating Account' : 'Start Your Investing Journey'}
+                </Button>
+
+                <FooterLink text="Already have an account?" linkText="Sign in" href="/sign-in" />
+            </form>
     </>
   )
 }

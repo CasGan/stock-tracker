@@ -35,5 +35,6 @@ export const connectToDatabase = async (): Promise<typeof mongoose>  => {
     const dbName = mongoose.connection?.name || '(unknown)';
     const host = mongoose.connection?.host || '(unknown)';
     console.log(`MongoDB connected [env=${process.env.NODE_ENV}, db="${dbName}", host="${host}"]`)
-    return cached.conn!;
+    
+    return cached.conn;
 }
