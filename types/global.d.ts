@@ -169,12 +169,14 @@ declare global {
     };
 
     type SearchCommandProps = {
-        open?: boolean;
-        setOpen?: (open: boolean) => void;
-        renderAs?: 'button' | 'text';
-        buttonLabel?: string;
-        buttonVariant?: 'primary' | 'secondary';
-        className?: string;
+        // open?: boolean;
+        // setOpen?: (open: boolean) => void;
+        renderAs?: 'star' | 'text' | 'button';
+        label?: string;
+        initialStocks: StockWithWatchlistStatus[];
+        // buttonLabel?: string;
+        // buttonVariant?: 'primary' | 'secondary';
+        // className?: string;
     };
 
     type AlertData = {
